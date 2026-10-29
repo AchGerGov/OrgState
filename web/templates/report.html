@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% block content %}
+<h3>Отчёт</h3>
+<p class="text-muted">Сотрудники с ≥3 подчинёнными, допущенные минимум в 2 кабинета из списка, из выбранных подразделений, отработавшие не менее заданного числа часов за последние N дней.</p>
+<form method="post" action="/report">
+  <div class="row g-2 mb-2">
+    <div class="col-md-6">
+      <label class="form-label">Подразделения:</label><br>
+      {% for d in departments %}
+        <label class="me-3"><input type="checkbox" name="department_ids" value="{{ d.id }}"
+          {% if selected_dept and d.id in selected_dept %}checked{% endif %}> {{ d.name }}</label>
+      {% endfor %}
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Кабинеты:</label><br>
+      {% for r in rooms %}
+        <label class="me-3"><input type="checkbox" name="room_ids" value="{{ r.id }}"
+          {% if selected_rooms and r.id in selected_rooms %}checked{% endif %}> {{ r.number }}</label>
+      {% endfor %}
+    </div>
+    <div class="col"><input name="min_hours" type="number" step="0.1" value="{{ min_hours or 100 }}" class="form-control"></div>
+    <div class="col"><input name="days_back" type="number" value="{{ days_back or 30 }}" class="form-control"></div>
+    <div class="col-auto"><button class="btn btn-primary">Сформировать</button></div>
+  </div>
+</form>
+{% if rows is not none %}
+<h5 class="mt-4">Результат ({{ rows|length }})</h5>
+<table class="table table-sm table-striped">
+  <tr><th>ФИО</th><th>Подразделение</th><th>Подчинённых</th><th>Совпавших кабинетов</th><th>Часов</th></tr>
+  {% for r in rows %}
+  <tr><td>{{ r.full_name }}</td><td>{{ r.department }}</td><td>{{ r.subordinates }}</td>
+      <td>{{ r.rooms_matched }}</td><td>{{ r.hours }}</td></tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}
