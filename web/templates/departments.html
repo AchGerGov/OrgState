@@ -1,0 +1,36 @@
+{% extends "base.html" %}{% block content %}
+<h3>Подразделения</h3>
+<form method="post" action="/departments" class="row g-2 mb-3">
+  <div class="col"><input name="name" class="form-control" placeholder="Наименование" required></div>
+  <div class="col">
+    <select name="type_id" class="form-select">
+      <option value="">— тип —</option>
+      {% for t in dtypes %}<option value="{{ t.id }}">{{ t.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col">
+    <select name="parent_id" class="form-select">
+      <option value="">— вышестоящее —</option>
+      {% for d in departments %}<option value="{{ d.id }}">{{ d.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col">
+    <select name="head_id" class="form-select">
+      <option value="">— руководитель —</option>
+      {% for e in employees %}<option value="{{ e.id }}">{{ e.full_name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-primary">Добавить</button></div>
+</form>
+<table class="table table-sm">
+  <tr><th>Наименование</th><th>Тип</th><th>Вышестоящее</th><th>Руководитель</th></tr>
+  {% for d in departments %}
+  <tr>
+    <td>{{ d.name }}</td>
+    <td>{{ d.type.name if d.type else '' }}</td>
+    <td>{{ d.parent.name if d.parent else '' }}</td>
+    <td>{{ d.head.full_name if d.head else '' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
