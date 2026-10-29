@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block content %}
+<h3>Типы</h3>
+<div class="row">
+  <div class="col-md-6">
+    <h5>Типы подразделений</h5>
+    <ul class="list-group mb-2">{% for t in dtypes %}<li class="list-group-item">{{ t.name }}</li>{% endfor %}</ul>
+    <form method="post" action="/types/department" class="input-group">
+      <input name="name" class="form-control" placeholder="Название" required>
+      <button class="btn btn-primary">Добавить</button>
+    </form>
+  </div>
+  <div class="col-md-6">
+    <h5>Типы сотрудников</h5>
+    <ul class="list-group mb-2">{% for t in etypes %}<li class="list-group-item">{{ t.name }}</li>{% endfor %}</ul>
+    <form method="post" action="/types/employee" class="input-group">
+      <input name="name" class="form-control" placeholder="Название" required>
+      <button class="btn btn-primary">Добавить</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
