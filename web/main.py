@@ -25,14 +25,13 @@ def db():
 # ---------- Главная ----------
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html", {})
 
 
 # ---------- Справочники типов ----------
 @app.get("/types", response_class=HTMLResponse)
 def types_page(request: Request, s: Session = Depends(db)):
-    return templates.TemplateResponse("types.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "types.html", {
         "dtypes": s.query(DepartmentType).all(),
         "etypes": s.query(EmployeeType).all(),
     })
@@ -53,8 +52,8 @@ def add_etype(name: str = Form(...), s: Session = Depends(db)):
 # ---------- Помещения ----------
 @app.get("/rooms", response_class=HTMLResponse)
 def rooms_page(request: Request, s: Session = Depends(db)):
-    return templates.TemplateResponse("rooms.html", {
-        "request": request, "rooms": s.query(Room).all()
+    return templates.TemplateResponse(request, "rooms.html", {
+        "rooms": s.query(Room).all()
     })
 
 
@@ -75,8 +74,7 @@ def del_room(room_id: int, s: Session = Depends(db)):
 # ---------- Подразделения ----------
 @app.get("/departments", response_class=HTMLResponse)
 def departments_page(request: Request, s: Session = Depends(db)):
-    return templates.TemplateResponse("departments.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "departments.html", {
         "departments": s.query(Department).all(),
         "dtypes": s.query(DepartmentType).all(),
         "employees": s.query(Employee).all(),
@@ -97,8 +95,7 @@ def add_dep(name: str = Form(...),
 # ---------- Сотрудники ----------
 @app.get("/employees", response_class=HTMLResponse)
 def employees_page(request: Request, s: Session = Depends(db)):
-    return templates.TemplateResponse("employees.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "employees.html", {
         "employees": s.query(Employee).all(),
         "etypes": s.query(EmployeeType).all(),
         "rooms": s.query(Room).all(),
@@ -126,7 +123,6 @@ def add_employee(full_name: str = Form(...),
 def del_employee(emp_id: int, s: Session = Depends(db)):
     e = s.get(Employee, emp_id)
     if e:
-        # снимаем head с подразделений, где он руководитель
         for d in s.query(Department).filter(Department.head_id == emp_id).all():
             d.head_id = None
         s.delete(e); s.commit()
@@ -136,8 +132,7 @@ def del_employee(emp_id: int, s: Session = Depends(db)):
 # ---------- Учёт времени ----------
 @app.get("/worktime", response_class=HTMLResponse)
 def worktime_page(request: Request, s: Session = Depends(db)):
-    return templates.TemplateResponse("worktime.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "worktime.html", {
         "employees": s.query(Employee).all(),
         "records": (s.query(WorkTimeRecord)
                      .order_by(WorkTimeRecord.work_date.desc(),
@@ -167,8 +162,7 @@ def wt_end(employee_id: int = Form(...), s: Session = Depends(db)):
 # ---------- Отчёт ----------
 @app.get("/report", response_class=HTMLResponse)
 def report_page(request: Request, s: Session = Depends(db)):
-    return templates.TemplateResponse("report.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "report.html", {
         "departments": s.query(Department).all(),
         "rooms": s.query(Room).all(),
         "rows": None,
@@ -183,8 +177,7 @@ def report_run(request: Request,
                days_back: int = Form(30),
                s: Session = Depends(db)):
     rows = build_report(s, department_ids, room_ids, min_hours, days_back)
-    return templates.TemplateResponse("report.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "report.html", {
         "departments": s.query(Department).all(),
         "rooms": s.query(Room).all(),
         "rows": rows,
