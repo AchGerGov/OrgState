@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block content %}
+<h3>Помещения</h3>
+<form method="post" action="/rooms" class="row g-2 mb-3">
+  <div class="col"><input name="number" class="form-control" placeholder="Номер" required></div>
+  <div class="col"><input name="name" class="form-control" placeholder="Название"></div>
+  <div class="col-auto"><button class="btn btn-primary">Добавить</button></div>
+</form>
+<table class="table table-sm">
+  <tr><th>№</th><th>Название</th><th></th></tr>
+  {% for r in rooms %}
+  <tr>
+    <td>{{ r.number }}</td><td>{{ r.name or '' }}</td>
+    <td><form method="post" action="/rooms/{{ r.id }}/delete"><button class="btn btn-sm btn-outline-danger">Удалить</button></form></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
