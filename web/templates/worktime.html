@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% block content %}
+<h3>Учёт рабочего времени</h3>
+<form method="post" action="/worktime/start" class="row g-2 mb-2">
+  <div class="col">
+    <select name="employee_id" class="form-select">
+      {% for e in employees %}<option value="{{ e.id }}">{{ e.full_name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-success">Начать день</button></div>
+</form>
+<form method="post" action="/worktime/end" class="row g-2 mb-3">
+  <div class="col">
+    <select name="employee_id" class="form-select">
+      {% for e in employees %}<option value="{{ e.id }}">{{ e.full_name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-warning">Завершить день</button></div>
+</form>
+<table class="table table-sm">
+  <tr><th>Сотрудник</th><th>Дата</th><th>Начало</th><th>Конец</th></tr>
+  {% for r in records %}
+  <tr>
+    <td>{{ r.employee.full_name }}</td>
+    <td>{{ r.work_date }}</td>
+    <td>{{ r.start_time }}</td>
+    <td>{{ r.end_time or '—' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
